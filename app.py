@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, File, UploadFile, Form, status
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from supabase import create_client, Client
@@ -16,7 +15,7 @@ from typing import Optional, List
 import io
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 # CORS for front-end development
 app.add_middleware(
@@ -356,11 +355,6 @@ def update_assessment_notes(supabase: Client, audio_id: int, notes: str):
         raise HTTPException(status_code=500, detail=f"Error updating assessment notes: {str(e)}")
 
 # API Routes
-@app.get("/", response_class=HTMLResponse)
-async def serve_index():
-    with open("static/index.html") as f:
-        return HTMLResponse(content=f.read())
-
 @app.post("/login")
 async def login(user: UserLogin):
     success, name, role = authenticate_user(supabase, user.name, user.password)
